@@ -7,19 +7,19 @@ import pandas as pd
 import json
 
 
-f=open("Cred.txt","r")
-email1=f.readline().strip().strip("'").strip('"').split(':')[1]
-password=f.readline().strip().strip("'").strip('"').split(':')[1]
-# print(email1,password)
-f.close()
+with open("Cred.json", "r") as f:
+    data = json.load(f)  # Load JSON file as a dictionary
+
+email1 = data.get("Email", "").strip()
+password = data.get("Password", "").strip()
+
+
 mail = imp.IMAP4_SSL("imap.gmail.com")
 #reponse,data = mail.login("adithreganti@gmail.com", "zkuf ffzp gwan hngs")  #User credentials
 
 reponse,data=mail.login(email1.strip(),password.strip())  #User credentials
 if(reponse!='OK'):
     print("Wrong Credentials ")
-    
-
 mail.select("inbox")
 
 
@@ -139,13 +139,15 @@ def FindCostFromGivenDate(dt):
                  print("No plain text body found.")
         #print("The number of transactions are ",len(AllCost),"\n","The totat spent was ",TotalCost)
         AllCost=np.array(AllCost,dtype=np.float64)
+        Juice_cost = 0
         ans={
              "Transactions":len(AllCost),
              "Total":TotalCost,
              "NC": NC_Cost,
              "Amul":Amul_cost,
              "Nescafe":Nescafe_Cost,
-             "Gupta":Gupta_cost
+             "Gupta":Gupta_cost,
+             "Juice": Juice_cost
         }
         print(json.dumps(ans))
        

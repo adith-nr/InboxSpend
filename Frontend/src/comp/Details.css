@@ -1,6 +1,5 @@
 *{
   
-  
 
 }
 body{
@@ -22,6 +21,25 @@ body{
     gap: 2rem; */
     padding: 4rem;
     padding-left: 2rem;
+}
+
+.outerlogin{
+    scale: 1.5;
+    display: flex;
+    height: 200px;
+    width: fit-content;
+    background-color: skyblue;
+    color: black;
+    align-items: center;
+
+    border-radius: 30px;
+}
+
+.login, button{
+    
+    align-items: center;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .det{
@@ -104,7 +122,7 @@ label{
 .pie{
     display: flex;
    
-    width: 100vw;
+    width: 110vw;
     flex-direction: column;
     justify-content: center;
     align-items: center;
