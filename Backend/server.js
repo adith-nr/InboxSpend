@@ -7,14 +7,32 @@ import path from 'path'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const app = express()
-app.use(cors())
+app.use(cors());
 app.use(express.json())
 
 app.post('/find',(req,res)=>{
     const dt = req.body.date
     const email=req.body.email
     const password=req.body.password
+    const opr_bank = req.body.opr_bank
+    const ID_customer = req.body.CustomerID
+
+    const script = {
+        "KTK" : "read.py",
+        "CNR" : "canara.py"
+    }
+
     console.log(dt)
+    // console.log(email, password, ID_customer)
+
+    const credentials = {
+        Email: email,
+        Password: password,
+        CustomerID: ID_customer
+    };
+
+    console.log(credentials)
+
     const filePath=path.join(__dirname,'date1.txt')
     fs.writeFile(filePath,dt,(err)=>{
         if(err){
@@ -26,21 +44,25 @@ app.post('/find',(req,res)=>{
             // return res.status(200).json({ message: "File written successfully" }); 
         }
     })
-    const credentials = `Email: ${email}\nPassword: ${password}\n`;
-    const filePath2=path.join(__dirname,'Cred.txt')
-    fs.writeFile(filePath2,credentials,(err)=>{
-        if(err){
-            console.log("Error in creating file")
-           
+
+    
+    
+    const filePath2 = path.join(__dirname, 'Cred.json'); // Change to .json file
+    
+    fs.writeFile(filePath2, JSON.stringify(credentials, null, 4), (err) => {
+        if (err) {
+            console.log("Error in creating file");
+        } else {
+            console.log("File Created Successfully!");
         }
-        else{
-            console.log("File Created Successfully!")
-            
-        }
-    })
-    const pythonRun = spawn( "python", ["read.py"]);
+    });
+    
+    const pythonRun = spawn( "python", [script[opr_bank]]);
 
     let result;
+
+    
+
     pythonRun.stdout.on("data",(data)=>{
         result=Buffer(data).toString()
         if(result=="Wrong Credentials "){
@@ -64,6 +86,8 @@ app.post('/find',(req,res)=>{
 app.get('/',(req,res)=>{
     res.send("Backend is working!")
 })
+
+
 app.listen(4000,()=>{
     console.log(`Server running on port 4000`);
 })
