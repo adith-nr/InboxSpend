@@ -12,6 +12,7 @@ with open("Cred.json", "r") as f:
 
 email1 = data.get("Email", "").strip()
 password = data.get("Password", "").strip()
+#print(email1,password)
 
 
 mail = imp.IMAP4_SSL("imap.gmail.com")

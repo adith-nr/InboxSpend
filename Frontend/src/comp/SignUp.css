@@ -1,0 +1,30 @@
+.formContainer{
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+    justify-content: center;
+    align-items: center;
+    width: 80vw;
+    padding: 2rem;
+}
+#left{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    gap: 1rem;
+    justify-content: center;
+   max-width: 400px;
+   border: 1px solid black;
+   border-radius: 1rem;
+   padding: 2rem;
+  
+  background-color: rgba(36, 46, 70, 0.31);
+}
+#sibtn{
+    margin-left: 4rem;
+}
+#crT{
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   
+}

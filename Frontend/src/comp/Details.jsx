@@ -1,9 +1,10 @@
-import React, { use, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Details.css'
  import Input from "@mui/material/Input";
 import Button from "@mui/material/Button";
 import { PieChart } from '@mui/x-charts/PieChart'
 import { BarLoader } from "react-spinners";
+import {useNavigate} from "react-router-dom"
 
 function Details() {
     const [Dt,setDt]=useState("")
@@ -11,13 +12,13 @@ function Details() {
     const [err,setErr]=useState(false)
     const [loading,setLoading]=useState(false)
     const [email,setEmail]=useState("")
-    const [password,setPass]=useState("")
+    const [password,setPassword]=useState("")
     const [showInput,setShowInput]=useState(true)
 
     const [opr_bank, setBank] = useState("")
     const [user, setUser] = useState(true)
     const [ID, setID] = useState("")
-
+    const navigate=useNavigate()
     const colors = ['#1976D2', '#D32F2F', '#388E3C', '#FBC02D', '#8E24AA'];
 
     function formatDate(dateG){
@@ -26,7 +27,37 @@ function Details() {
         let formatDate=`${day}-${monthName[parseInt(month-1)]}-${year}`
         return formatDate
     }
+    useEffect(() => {
+        async function FetchInfo(){
+            try {
+                const token =localStorage.getItem("token")
+                console.log(token)
+                if(!token){
+                    setErr(true)
+                    return
+                }
+                const res = await fetch("http://localhost:4000/profile",{
+                    method:"GET",
+                    headers:{ "Content-Type": "application/json" ,
+                         "Authorization": `Bearer ${token}`
+                    },
+                   
+                })
+                const resdata = await res.json()
+                console.log(resdata)
+                setErr(false)
+                setEmail(resdata.email)
+                setPassword(resdata.appPass)
+                
 
+            } catch (error) {
+                setErr(true)
+                console.log("Error")
+            }
+
+        }
+        FetchInfo()
+    }, [])
 
     async function handleClick() {
         setLoading(true)
@@ -85,11 +116,7 @@ function Details() {
                         <label htmlFor="date">Enter Date from when you want the records: </label>
                         <Input id='datePicker' type="date" name="date"  value={Dt} onChange={(e)=>{setDt(e.target.value)}} />
                         <br />
-                        <label htmlFor="">Enter Gmail id</label>
-                        <Input type="email" id='email' name='email' value={email} onChange={(e)=>{setEmail(e.target.value)}}/>
-                        <br />
-                        <label htmlFor="pass">Enter App password</label> 
-                        <Input type="password" id='password' name='password' value={password} onChange={(e)=>{setPass(e.target.value)}}/>
+                      
                         <br />
 
                         {
@@ -132,8 +159,14 @@ function Details() {
           )}
         </div>
         <div className="output">
+       
             {response  && !loading && !response.error && !err ? (
                 <div className="show">
+                    <button onClick={()=>{
+                localStorage.clear()
+                setEmail("")
+                navigate('/')
+            }}>Logout</button>
                      Since {formatDate(Dt)} -
                      <div className="b1">
                         <div id='item'>Total Spent: {response.Total}Rs</div>

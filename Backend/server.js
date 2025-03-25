@@ -2,13 +2,59 @@ import express from "express"
 import cors from "cors"
 import {spawn} from "child_process"
 import {fileURLToPath} from 'url'
+import dotenv from "dotenv"
+dotenv.config()
 import fs from 'fs'
 import path from 'path'
+import LoginRoute from "./routes/login.js"
+import SignUpRoute from "./routes/signup.js"
+import ConnectDB from "./db.js"
+import User from "./models/user.js"
+import jwt from "jsonwebtoken"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
 const app = express()
 app.use(cors());
 app.use(express.json())
+ConnectDB()
+
+app.use("/signup",SignUpRoute)
+app.use("/login",LoginRoute)
+
+function auth(req,res,next){
+    try {
+        const token = req.header("Authorization")?.split(" ")[1]
+        console.log(token)
+        if(!token){
+            return res.status(401).send({message:"Access Denied"})
+        }
+        const verified = jwt.verify(token,process.env.JWT_SECRET)
+        
+        req.user = verified
+        
+        next()
+    } catch (error) {
+        res.status(400).json({ message: "Invalid Token" });
+    }
+}
+
+app.get("/profile",auth,async (req,res)=>{
+    try {
+        console.log(req.user)
+        const user = await User.findById(req.user.id).select("-password")
+        if(!user){
+            return res.status(404).json({mesage:"User Not Found"})
+
+        }
+        console.log(user)
+        res.json(user)
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+    
+})
+
 
 app.post('/find',(req,res)=>{
     const dt = req.body.date
