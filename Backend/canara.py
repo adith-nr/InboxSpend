@@ -33,6 +33,7 @@ mail = imaplib.IMAP4_SSL(IMAP_mail)
 res, data = mail.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
 if(res!='OK'):
     print("Wrong Credentials ")
+    exit()
 mail.select(MAILBOX)
 
 # status, messages = mail.search(None, 'FROM "canarabank@canarabank.com" HEADER Subject "E- Pass Sheet" SINCE {date}')
