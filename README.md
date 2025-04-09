@@ -1,4 +1,4 @@
-# Trial
+# InboxSpend
 
 📬 Inbox Spend Tracker — Project Overview
 
