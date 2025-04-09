@@ -16,7 +16,7 @@ password = data.get("Password", "").strip()
 
 
 mail = imp.IMAP4_SSL("imap.gmail.com")
-#reponse,data = mail.login("adithreganti@gmail.com", "zkuf ffzp gwan hngs")  #User credentials
+
 
 reponse,data=mail.login(email1.strip(),password.strip())  #User credentials
 if(reponse!='OK'):
